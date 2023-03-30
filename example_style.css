@@ -1,0 +1,49 @@
+.hexoku {
+  table-layout: fixed;
+  width: 832px;
+  height: 832px;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.hexoku, .hexoku-square {
+  border: 1px solid;
+}
+
+.hexoku-square {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Thicker borders to accentuate the 4x4 tiles */
+.hexoku-square:nth-child(-4n+12) {
+  border-right: 2px solid;
+}
+
+.hexoku-square:nth-child(4n+5) {
+  border-left: 2px solid;
+}
+
+.hexoku-row:nth-child(-4n+12) .hexoku-square {
+  border-bottom: 2px solid;
+}
+
+.hexoku-row:nth-child(4n+5) .hexoku-square {
+  border-top: 2px solid;
+}
+
+
+.hexoku-square-text {
+  display: inline-block;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 36px;
+  margin: 0px;
+}
+
+.hexoku-square:hover {
+  background-color: rgb(150,150,150);
+}
