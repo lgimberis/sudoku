@@ -5,6 +5,8 @@ const BOARD_SQUARES = BOARD_WIDTH * BOARD_WIDTH;
 const LETTERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'] //, 'a', 'b', 'c', 'd', 'e', 'f', '0']
 
 function setup() {
+  // Create our board, fill it, empty it, and add relevant event listeners.
+
   let root = document.getElementById("hexoku");
   this.board = new Array(BOARD_SQUARES).fill('');
   this.domBoard = new Array(BOARD_SQUARES).fill(0);
@@ -32,6 +34,7 @@ function setup() {
 }
 
 function onType(event) {
+  // Update the DOM and board when the user types a valid key having selected a square.
   let key = event.key.toString();
   if (this.squareTarget >= 0 && LETTERS.includes(key)) {
     this.board[this.squareTarget] = key
@@ -40,11 +43,12 @@ function onType(event) {
     }
     this.domBoard[this.squareTarget].setAttribute('class', 'hexoku-square');
     this.squareTarget = -1;
+    this.render();
   }
-  this.render();
 }
 
 function onClickSquare(index, hexoku) {
+  // Makes a square look "clicked". Also tag it as being the target of keyboard inputs.
   return function(event) {
     this.setAttribute('class', 'hexoku-square hexoku-clicked');
     hexoku.squareTarget = index;
@@ -52,13 +56,15 @@ function onClickSquare(index, hexoku) {
 }
 
 function onClickBoard(event) {
+  // Reset the class on all squares so none appear "clicked". Reset the target so typing does nothing again.
   for (let i = 0; i < BOARD_SQUARES; i++) {
     this.domBoard[i].setAttribute('class', 'hexoku-square');
   }
+  this.squareTarget = -1;
 }
 
 function render() {
-  // Set all DOM elements according to our in-memory board
+  // Update DOM elements according to our in-memory board
   for (let i = 0; i < BOARD_SQUARES; i++) {
     this.domBoard[i].innerText = this.board[i];
   }
@@ -66,71 +72,62 @@ function render() {
 }
 
 function squaresInRow(row) {
+  // Return an array of the non-empty contents of all squares in row #{row}
   let squares = []
   for (let i = row * BOARD_WIDTH; i < (row + 1) * BOARD_WIDTH; i++) {
-    squares.push(this.board[i]);
+    if (this.board[i]) {
+      squares.push(this.board[i]);
+    }
   }
   return squares;
 }
 
 function squaresInColumn(column) {
+  // Return an array of the non-empty contents of all squares in column #{column}
   let squares = []
   for (let rowIndex = 0; rowIndex < BOARD_SQUARES; rowIndex += BOARD_WIDTH) {
-    squares.push(this.board[rowIndex + column]);
-  }
-  return squares;
-}
-
-function coordToTileIndex(row, column) {
-  return Math.floor(row / TILE_WIDTH) * TILE_WIDTH + Math.floor(column / TILE_WIDTH);
-}
-
-function indexToTileIndex(index) {
-  let column = index % BOARD_WIDTH;
-  let row = (index - column) / BOARD_WIDTH;
-  return this.coordToTileIndex(row, column);
-}
-
-function squaresInTile(tileIndex) {
-  let squares = []
-  let rowStart = TILE_WIDTH * Math.floor(tileIndex / TILE_WIDTH)
-  let columnStart = TILE_WIDTH * (tileIndex % TILE_WIDTH);
-  for (let row = rowStart; row < rowStart + TILE_WIDTH; row++) {
-    let rowIndex = row * BOARD_WIDTH;
-    for (let column = columnStart; column < columnStart + TILE_WIDTH; column++) {
+    if (this.board[rowIndex + column]) {
       squares.push(this.board[rowIndex + column]);
     }
   }
   return squares;
 }
 
-function testUniquePattern(iterationSkipSize, stepSize, iterationStart, iterationEnd, stepStart, stepEnd) {
-  let start = 0;
-  for (let iteration = 0; iteration < BOARD_WIDTH; iteration++) {
-    if (iteration >= iterationStart && iteration <= iterationEnd) {
-      let haveElements = []
-      let index = start;
-      for (let step = 0; step < BOARD_WIDTH; step++) {
-        if (step >= stepStart && step <= stepEnd && this.board[index]) {
-          if (haveElements.includes(this.board[index])) {
-            return false;
-          }
-          haveElements.push(this.board[index]);
-        }
-        index += stepSize(step);
-      }
-    }
-    start += iterationSkipSize(iteration);
-  }
-  return true;
+function coordToTileIndex(row, column) {
+  // Convert a {row, column} combination to a "tile index".
+  return Math.floor(row / TILE_WIDTH) * TILE_WIDTH + Math.floor(column / TILE_WIDTH);
 }
 
-function testAllPatterns(iterationSkipSize, stepSize) {
-  return this.testUniquePattern(iterationSkipSize, stepSize, 0, BOARD_WIDTH - 1, 0, BOARD_WIDTH - 1)
+function indexToTileIndex(index) {
+  // Convert an array index to a {row, column} combination and return the "tile index"
+  let column = index % BOARD_WIDTH;
+  let row = (index - column) / BOARD_WIDTH;
+  return this.coordToTileIndex(row, column);
+}
+
+function squaresInTile(tileIndex) {
+  // Return an array of the non-empty contents of all squares in tile #{tileIndex}
+  let squares = []
+  let rowStart = TILE_WIDTH * Math.floor(tileIndex / TILE_WIDTH)
+  let columnStart = TILE_WIDTH * (tileIndex % TILE_WIDTH);
+  for (let row = rowStart; row < rowStart + TILE_WIDTH; row++) {
+    let rowIndex = row * BOARD_WIDTH;
+    for (let column = columnStart; column < columnStart + TILE_WIDTH; column++) {
+      if (this.board[rowIndex + column]) {
+        squares.push(this.board[rowIndex + column]);
+      }
+    }
+  }
+  return squares;
+}
+
+function doesArrayHaveDuplicates(array) {
+  // Helper function for checking if an array has any duplicate items
+  return array.filter((x, i) => array.indexOf(x) != i).length > 0;
 }
 
 function isPlacementValid(index, value) {
-  // Is it valid to place 'value' at square 'index'?
+  // Check if it is valid to place 'value' at square 'index'
   let column = index % BOARD_WIDTH;
   let row = (index - column) / BOARD_WIDTH;
 
@@ -140,25 +137,23 @@ function isPlacementValid(index, value) {
   // Test column
   let isColumnValid = !(this.squaresInColumn(column).includes(value));
 
-  // Test the surrounding [4]x[4] square
+  // Test the surrounding tile
   let isTileValid = !(this.squaresInTile(this.coordToTileIndex(row, column)).includes(value));
   return isRowValid && isColumnValid && isTileValid;
 }
 
 function isBoardValid() {
-  // Test rows
-  let rows = this.testAllPatterns((i) => BOARD_WIDTH, (i) => 1);
-
-  // Test columns
-  let columns = this.testAllPatterns((i) => 1, (i) => BOARD_WIDTH);
-
-  // Test [4]x[4] squares
-  let tiles = this.testAllPatterns(
-    (i) => i % TILE_WIDTH == TILE_WIDTH - 1 ? ((TILE_WIDTH - 1) * BOARD_WIDTH + 1) * TILE_WIDTH : TILE_WIDTH,
-    (i) => i % TILE_WIDTH == TILE_WIDTH - 1 ? BOARD_WIDTH - TILE_WIDTH + 1 : 1
-  );
-
-  return rows && columns && tiles;
+  // Check that our board abides by the rules of Sudoku
+  // Rows, columns, and tiles are all checked
+  for (let i = 0; i < BOARD_WIDTH; i++) {
+    let rowDuplicates = doesArrayHaveDuplicates(this.squaresInRow(i));
+    let columnDuplicates = doesArrayHaveDuplicates(this.squaresInColumn(i));
+    let tileDuplicates = doesArrayHaveDuplicates(this.squaresInTile(i));
+    if (rowDuplicates || columnDuplicates || tileDuplicates) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function generateSolvedBoard() {
@@ -196,42 +191,13 @@ function generateSolvedBoard() {
   this.board = board;
 }
 
-function bruteForcePlaceSquares(numSquares) {
-  // Get the player started by placing some Squares at random.
-  let squaresAvailable = Array(BOARD_SQUARES).fill(0).map((x, i) => i);
-  for (let squaresPlaced = 0; squaresPlaced < numSquares; squaresPlaced++) {
-    // Pick a random empty Square
-    let testSquareIndex = Math.floor(Math.random() * (BOARD_SQUARES - squaresPlaced));
-    let testSquare = squaresAvailable.splice(testSquareIndex, 1)[0];
-    let testValue = ''
-
-    let lettersAvailable = Array(BOARD_WIDTH).fill(0).map((x, i) => LETTERS[i]);
-    let thisSquareValid = false;
-    while (!thisSquareValid && lettersAvailable.length) {
-      let letterAvailableIndex = Math.floor(Math.random() * lettersAvailable.length);
-      testValue = lettersAvailable.splice(letterAvailableIndex, 1)[0];
-      thisSquareValid = this.isPlacementValid(testSquare, testValue)
-      if (!thisSquareValid) { console.log("Value collision") }
-    }
-    if (lettersAvailable.length) {
-      this.board[testSquare] = testValue;
-    } else {
-      console.log("No available tiles!")
-      this.board[testSquare] = "!?";
-    }
-  }
-}
-
-
 let hexoku = {
   setup: setup,
   render: render,
-  testAllPatterns: testAllPatterns,
   squaresInRow: squaresInRow,
   squaresInColumn: squaresInColumn,
   squaresInTile: squaresInTile,
   coordToTileIndex: coordToTileIndex,
-  testUniquePattern: testUniquePattern,
   isBoardValid: isBoardValid,
   isPlacementValid: isPlacementValid,
   generateSolvedBoard: generateSolvedBoard,
