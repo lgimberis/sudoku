@@ -20,19 +20,19 @@
 }
 
 /* Thicker borders to accentuate the 4x4 tiles */
-.hexoku-square:nth-child(-4n+12) {
+.hexoku-square:nth-child(-3n+6) {
   border-right: 2px solid;
 }
 
-.hexoku-square:nth-child(4n+5) {
+.hexoku-square:nth-child(3n+4) {
   border-left: 2px solid;
 }
 
-.hexoku-row:nth-child(-4n+12) .hexoku-square {
+.hexoku-row:nth-child(-3n+6) .hexoku-square {
   border-bottom: 2px solid;
 }
 
-.hexoku-row:nth-child(4n+5) .hexoku-square {
+.hexoku-row:nth-child(3n+4) .hexoku-square {
   border-top: 2px solid;
 }
 
@@ -46,4 +46,8 @@
 
 .hexoku-square:hover {
   background-color: rgb(150,150,150);
+}
+
+.hexoku-clicked {
+  background-color: rgb(150,150,255);
 }
