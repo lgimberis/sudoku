@@ -10,14 +10,14 @@ const CLASSES = {
     'board': 'hexoku',
     'square': 'sudoku-square',
     'squareText': 'sudoku-square-text',
-    'clicked': 'sudoku-square sudoku-clicked',
+    'squareClicked': 'sudoku-square sudoku-clicked',
     'row': 'sudoku-row'
   },
   4: {
     'board': 'hexoku',
     'square': 'hexoku-square',
     'squareText': 'hexoku-square-text',
-    'clicked': 'hexoku-square hexoku-clicked',
+    'squareClicked': 'hexoku-square hexoku-clicked',
     'row': 'hexoku-row'
   }
 }
@@ -68,7 +68,7 @@ const hexoku = {
       for (let child of this.domBoard[this.squareTarget].children) {
         child.innerText = key
       }
-      this.domBoard[this.squareTarget].setAttribute('class', CLASSES[this.width].squareText);
+      this.domBoard[this.squareTarget].setAttribute('class', CLASSES[this.tileWidth].square);
       this.squareTarget = -1;
       this.render();
     }
@@ -77,7 +77,7 @@ const hexoku = {
   onClickSquare(index, hexoku) {
     // Makes a square look "clicked". Also tag it as being the target of keyboard inputs.
     return function(_event) {
-      this.setAttribute('class', CLASSES[hexoku.width].squareClicked);
+      this.setAttribute('class', CLASSES[hexoku.tileWidth].squareClicked);
       hexoku.squareTarget = index;
     }
   },
@@ -142,7 +142,7 @@ const hexoku = {
   onClickBoard(_event) {
     // Reset the class on all squares so none appear "clicked". Reset the target so typing does nothing again.
     for (let i = 0; i < this.numSquares; i++) {
-      this.domBoard[i].setAttribute('class', CLASSES[this.width].square);
+      this.domBoard[i].setAttribute('class', CLASSES[this.tileWidth].square);
     }
     this.squareTarget = -1;
   },
