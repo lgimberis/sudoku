@@ -10,6 +10,7 @@ const CLASSES = {
     'board': 'hexoku',
     'square': 'sudoku-square',
     'squareText': 'sudoku-square-text',
+    'squareTextFixed': 'sudoku-square-text-fixed',
     'squareClicked': 'sudoku-square sudoku-clicked',
     'row': 'sudoku-row'
   },
@@ -17,6 +18,7 @@ const CLASSES = {
     'board': 'hexoku',
     'square': 'hexoku-square',
     'squareText': 'hexoku-square-text',
+    'squareTextFixed': 'hexoku-square-text-fixed',
     'squareClicked': 'hexoku-square hexoku-clicked',
     'row': 'hexoku-row'
   }
@@ -47,7 +49,6 @@ const hexoku = {
       for (let x = 0; x < this.boardWidth; x++) {
         let square = document.createElement("td");
         square.setAttribute('class', CLASSES[width].square);
-        square.addEventListener('click', this.onClickSquare(y * this.boardWidth + x, this).bind(square));
         row.appendChild(square);
         let squareTextElement = document.createElement("span");
         squareTextElement.setAttribute('class', CLASSES[width].squareText);
@@ -57,6 +58,7 @@ const hexoku = {
     }
     this.board = this.generateSolvedBoard(width);
     this.board = this.hideSomeSquares(this.board, 0.5);
+    this.distinguishFilledSquares();
     this.render();
   },
 
@@ -86,7 +88,7 @@ const hexoku = {
   render() {
     // Update DOM elements according to our in-memory board
     for (let i = 0; i < this.numSquares; i++) {
-      this.domBoard[i].innerText = this.board[i];
+      this.domBoard[i].children[0].innerText = this.board[i];
     }
     console.log("Board is valid: ", this.isBoardValid(this.board));
   },
@@ -225,6 +227,18 @@ const hexoku = {
       board[square] = '';
     }
     return board
+  },
+  distinguishFilledSquares() {
+    // Set a 'fixed' CSS class for the squares that the player starts with.
+    // Add an event listener for the squares that the player can edit.
+    for (let squareNumber = 0; squareNumber < this.numSquares; squareNumber++) {
+      if (this.board[squareNumber]) {
+        this.domBoard[squareNumber].children[0].setAttribute('class', CLASSES[this.tileWidth].squareTextFixed);
+      } else {
+        this.domBoard[squareNumber].children[0].setAttribute('class', CLASSES[this.tileWidth].squareText);
+        this.domBoard[squareNumber].addEventListener('click', this.onClickSquare(squareNumber, this).bind(this.domBoard[squareNumber]));
+      }
+    }
   }
 };
 

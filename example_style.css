@@ -44,11 +44,18 @@
   margin: 0px;
 }
 
+.hexoku-square-text-fixed {
+  display: inline-block;
+  font-family: 'Helvetica', sans-serif;
+  font-weight: bold;
+  font-size: 36px;
+  margin: 0px;
+}
 .hexoku-square:hover {
   background-color: rgb(150,150,150);
 }
 
-.hexoku-clicked {
+.hexoku-clicked,.hexoku-clicked:hover {
   background-color: rgb(150,150,255);
 }
 
@@ -99,10 +106,19 @@
   margin: 0px;
 }
 
+.sudoku-square-text-fixed {
+  display: inline-block;
+  font-family: 'Helvetica', sans-serif;
+  font-weight: bold;
+  font-size: 36px;
+  margin: 0px;
+}
+
 .sudoku-square:hover {
   background-color: rgb(150,150,150);
 }
 
-.sudoku-clicked {
+.sudoku-clicked,.sudoku-clicked:hover {
   background-color: rgb(150,150,255);
 }
+
