@@ -30,6 +30,7 @@ function setup() {
     }
   }
   this.generateSolvedBoard();
+  hideSomeSquares(this.board, 0.5);
   this.render();
 }
 
@@ -68,26 +69,26 @@ function render() {
   for (let i = 0; i < BOARD_SQUARES; i++) {
     this.domBoard[i].innerText = this.board[i];
   }
-  console.log("Board is valid: ", this.isBoardValid());
+  console.log("Board is valid: ", this.isBoardValid(this.board));
 }
 
-function squaresInRow(row) {
+function squaresInRow(board, row) {
   // Return an array of the non-empty contents of all squares in row #{row}
   let squares = []
   for (let i = row * BOARD_WIDTH; i < (row + 1) * BOARD_WIDTH; i++) {
-    if (this.board[i]) {
-      squares.push(this.board[i]);
+    if (board[i]) {
+      squares.push(board[i]);
     }
   }
   return squares;
 }
 
-function squaresInColumn(column) {
+function squaresInColumn(board, column) {
   // Return an array of the non-empty contents of all squares in column #{column}
   let squares = []
   for (let rowIndex = 0; rowIndex < BOARD_SQUARES; rowIndex += BOARD_WIDTH) {
-    if (this.board[rowIndex + column]) {
-      squares.push(this.board[rowIndex + column]);
+    if (board[rowIndex + column]) {
+      squares.push(board[rowIndex + column]);
     }
   }
   return squares;
@@ -105,7 +106,7 @@ function indexToTileIndex(index) {
   return this.coordToTileIndex(row, column);
 }
 
-function squaresInTile(tileIndex) {
+function squaresInTile(board, tileIndex) {
   // Return an array of the non-empty contents of all squares in tile #{tileIndex}
   let squares = []
   let rowStart = TILE_WIDTH * Math.floor(tileIndex / TILE_WIDTH)
@@ -113,8 +114,8 @@ function squaresInTile(tileIndex) {
   for (let row = rowStart; row < rowStart + TILE_WIDTH; row++) {
     let rowIndex = row * BOARD_WIDTH;
     for (let column = columnStart; column < columnStart + TILE_WIDTH; column++) {
-      if (this.board[rowIndex + column]) {
-        squares.push(this.board[rowIndex + column]);
+      if (board[rowIndex + column]) {
+        squares.push(board[rowIndex + column]);
       }
     }
   }
@@ -126,29 +127,29 @@ function doesArrayHaveDuplicates(array) {
   return array.filter((x, i) => array.indexOf(x) != i).length > 0;
 }
 
-function isPlacementValid(index, value) {
+function isPlacementValid(board, index, value) {
   // Check if it is valid to place 'value' at square 'index'
   let column = index % BOARD_WIDTH;
   let row = (index - column) / BOARD_WIDTH;
 
   // Test row
-  let isRowValid = !(this.squaresInRow(row).includes(value));
+  let isRowValid = !(this.squaresInRow(board, row).includes(value));
 
   // Test column
-  let isColumnValid = !(this.squaresInColumn(column).includes(value));
+  let isColumnValid = !(this.squaresInColumn(board, column).includes(value));
 
   // Test the surrounding tile
-  let isTileValid = !(this.squaresInTile(this.coordToTileIndex(row, column)).includes(value));
+  let isTileValid = !(this.squaresInTile(board, this.coordToTileIndex(row, column)).includes(value));
   return isRowValid && isColumnValid && isTileValid;
 }
 
-function isBoardValid() {
+function isBoardValid(board) {
   // Check that our board abides by the rules of Sudoku
   // Rows, columns, and tiles are all checked
   for (let i = 0; i < BOARD_WIDTH; i++) {
-    let rowDuplicates = doesArrayHaveDuplicates(this.squaresInRow(i));
-    let columnDuplicates = doesArrayHaveDuplicates(this.squaresInColumn(i));
-    let tileDuplicates = doesArrayHaveDuplicates(this.squaresInTile(i));
+    let rowDuplicates = doesArrayHaveDuplicates(this.squaresInRow(board, i));
+    let columnDuplicates = doesArrayHaveDuplicates(this.squaresInColumn(board, i));
+    let tileDuplicates = doesArrayHaveDuplicates(this.squaresInTile(board, i));
     if (rowDuplicates || columnDuplicates || tileDuplicates) {
       return false;
     }
@@ -159,36 +160,50 @@ function isBoardValid() {
 function generateSolvedBoard() {
   // Randomly generate a solved board
   let board = Array(BOARD_SQUARES).fill('')
-  for (let letter of LETTERS) {
-    // Fill in the board, all copies of a digit at a time (e.g. all 0s, then all 1s, etc)
-    let rows = Array(BOARD_WIDTH).fill(0).map((x, i) => i);
-    let columns = Array.from(rows);
+  let history = Array(BOARD_SQUARES).fill(0);
+  history[0] = Array.from(LETTERS);
 
-    for (let tile = 0; tile < BOARD_WIDTH; tile++) {
-      let rowStart = Math.floor(tile / TILE_WIDTH) * TILE_WIDTH; // Lowest row that is in this tile
-      let columnStart = (tile % TILE_WIDTH) * TILE_WIDTH; // Lowest column in the tile
+  let square = 0;
+  while (square < BOARD_SQUARES) {
+    if (history[0].length == 0) {
+      console.log("Could not generate any board at all. Shameful!");
+      return;
+    }
 
-      let row = -1;
-      let column = -1;
-      let deadlock = 0;
-      while ((!rows.includes(row) || !columns.includes(column) || board[row * BOARD_WIDTH + column] != '') && deadlock < 1000) {
-        row = rowStart + Math.floor(Math.random() * TILE_WIDTH);
-        column = columnStart + Math.floor(Math.random() * TILE_WIDTH);
-        deadlock++;
-      }
-      if (deadlock < 1000) {
-        rows.splice(rows.indexOf(row), 1);
-        columns.splice(columns.indexOf(column), 1);
-        board[row * BOARD_WIDTH + column] = letter;
-      } else {
-        this.board = board;
-        return;
-        console.log("Deadlocked");
+    // Reset all possible options for the next square
+    if (square < BOARD_SQUARES - 1) {
+      history[square + 1] = Array.from(LETTERS);
+    }
+
+    let placed = false;
+    while (!placed && history[square].length > 0) {
+      let letterIndex = Math.floor(Math.random() * history[square].length);
+      let letter = history[square].splice(letterIndex, 1)[0];
+
+      if (this.isPlacementValid(board, square, letter)) {
+        board[square] = letter;
+        placed = true;
+        square++;
       }
 
     }
+
+    if (!placed) {
+      board[square] = '';
+      square--;
+    }
   }
   this.board = board;
+}
+
+function hideSomeSquares(board, percentage) {
+  // Replace {percentage}% of squares in board with empty space
+  let squares = Array(BOARD_SQUARES).fill(0).map((x, i) => i);
+  for (let squareNumber = 0; squareNumber < Math.floor(BOARD_SQUARES * percentage); squareNumber++) {
+    let index = Math.floor(Math.random() * squares.length);
+    let square = squares.splice(index, 1)[0];
+    board[square] = '';
+  }
 }
 
 let hexoku = {
