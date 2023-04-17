@@ -7,7 +7,7 @@ const LETTERS = {
 
 const CLASSES = {
   3: {
-    'board': 'hexoku',
+    'board': 'sudoku',
     'square': 'sudoku-square',
     'squareText': 'sudoku-square-text',
     'squareTextFixed': 'sudoku-square-text-fixed',
@@ -26,16 +26,24 @@ const CLASSES = {
 
 const hexoku = {
   squareTarget: -1,
-  setup(width = 4) {
+  setup() {
     // Create our board, fill it, empty it, and add relevant event listeners.
-    if (!LETTERS.hasOwnProperty(width)) {
-      return;
+    let root = null;
+    let width = null;
+    for (const _width in CLASSES) {
+      root = document.getElementById(CLASSES[_width].board);
+      if (root) {
+        width = Number(_width);
+        break;
+      }
+    }
+    if (!root) {
+      console.error("No matching ID found")
     }
     this.letters = LETTERS[width];
     this.tileWidth = width;
     this.boardWidth = width * width;
     this.numSquares = this.boardWidth * this.boardWidth;
-    let root = document.getElementById(CLASSES[width].board);
     this.board = new Array(this.numSquares).fill('');
     this.domBoard = new Array(this.numSquares).fill(0);
     let board = document.createElement("table");
