@@ -10,7 +10,7 @@ const CLASSES = {
     'board': 'sudoku',
     'square': 'sudoku-square',
     'squareText': 'sudoku-square-text',
-    'squareTextFixed': 'sudoku-square-text-fixed',
+    'squareFixed': 'sudoku-square sudoku-square-fixed',
     'squareClicked': 'sudoku-square sudoku-clicked',
     'row': 'sudoku-row'
   },
@@ -18,7 +18,7 @@ const CLASSES = {
     'board': 'hexoku',
     'square': 'hexoku-square',
     'squareText': 'hexoku-square-text',
-    'squareTextFixed': 'hexoku-square-text-fixed',
+    'squareFixed': 'hexoku-square hexoku-square-fixed',
     'squareClicked': 'hexoku-square hexoku-clicked',
     'row': 'hexoku-row'
   }
@@ -151,8 +151,11 @@ const hexoku = {
   },
   onClickBoard(_event) {
     // Reset the class on all squares so none appear "clicked". Reset the target so typing does nothing again.
-    for (let i = 0; i < this.numSquares; i++) {
-      this.domBoard[i].setAttribute('class', CLASSES[this.tileWidth].square);
+    if (this.squareTarget != -1) {
+      let i = this.squareTarget;
+      if (this.domBoard[i].getAttribute('class') == CLASSES[this.tileWidth].squareClicked) {
+        this.domBoard[i].setAttribute('class', CLASSES[this.tileWidth].square);
+      }
     }
     this.squareTarget = -1;
   },
@@ -241,9 +244,8 @@ const hexoku = {
     // Add an event listener for the squares that the player can edit.
     for (let squareNumber = 0; squareNumber < this.numSquares; squareNumber++) {
       if (this.board[squareNumber]) {
-        this.domBoard[squareNumber].children[0].setAttribute('class', CLASSES[this.tileWidth].squareTextFixed);
+        this.domBoard[squareNumber].setAttribute('class', CLASSES[this.tileWidth].squareFixed);
       } else {
-        this.domBoard[squareNumber].children[0].setAttribute('class', CLASSES[this.tileWidth].squareText);
         this.domBoard[squareNumber].addEventListener('click', this.onClickSquare(squareNumber, this).bind(this.domBoard[squareNumber]));
       }
     }

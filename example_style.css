@@ -16,7 +16,19 @@
   min-width: 48px;
   min-height: 48px;
   text-align: center;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 36px;
   vertical-align: middle;
+}
+
+.hexoku-square-fixed {
+  font-weight: bold;
+}
+
+
+.hexoku-square-text {
+  display: inline-block;
+  margin: 0px;
 }
 
 /* Thicker borders to accentuate the 4x4 tiles */
@@ -36,27 +48,16 @@
   border-top: 2px solid;
 }
 
-
-.hexoku-square-text {
-  display: inline-block;
-  font-family: 'Helvetica', sans-serif;
-  font-size: 36px;
-  margin: 0px;
-}
-
-.hexoku-square-text-fixed {
-  display: inline-block;
-  font-family: 'Helvetica', sans-serif;
-  font-weight: bold;
-  font-size: 36px;
-  margin: 0px;
-}
 .hexoku-square:hover {
-  background-color: rgb(150,150,150);
+  background-color: rgb(170, 170, 255);
+}
+
+.hexoku-square-fixed:hover {
+  background-color: rgb(255, 170, 170);
 }
 
 .hexoku-clicked,.hexoku-clicked:hover {
-  background-color: rgb(150,150,255);
+  background-color: rgb(50, 50,255);
 }
 
 
@@ -79,6 +80,10 @@
   min-height: 48px;
   text-align: center;
   vertical-align: middle;
+}
+
+.sudoku-square-fixed {
+  font-weight: bold;
 }
 
 /* Thicker borders to accentuate the 4x4 tiles */
@@ -106,19 +111,15 @@
   margin: 0px;
 }
 
-.sudoku-square-text-fixed {
-  display: inline-block;
-  font-family: 'Helvetica', sans-serif;
-  font-weight: bold;
-  font-size: 36px;
-  margin: 0px;
+.sudoku-square:hover {
+  background-color: rgb(170, 170, 255);
 }
 
-.sudoku-square:hover {
-  background-color: rgb(150,150,150);
+.sudoku-square-fixed:hover {
+  background-color: rgb(255, 170, 170);
 }
 
 .sudoku-clicked,.sudoku-clicked:hover {
-  background-color: rgb(150,150,255);
+  background-color: rgb(50, 50,255);
 }
 
