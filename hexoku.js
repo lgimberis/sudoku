@@ -12,6 +12,7 @@ const CLASSES = {
     'squareText': 'sudoku-square-text',
     'squareFixed': 'sudoku-square sudoku-square-fixed',
     'squareClicked': 'sudoku-square sudoku-clicked',
+    'squareWon': 'sudoku-square sudoku-square-fixed sudoku-won',
     'row': 'sudoku-row'
   },
   4: {
@@ -20,6 +21,7 @@ const CLASSES = {
     'squareText': 'hexoku-square-text',
     'squareFixed': 'hexoku-square hexoku-square-fixed',
     'squareClicked': 'hexoku-square hexoku-clicked',
+    'squareWon': 'hexoku-square hexoku-square-fixed hexoku-won',
     'row': 'hexoku-row'
   }
 }
@@ -78,7 +80,14 @@ const hexoku = {
       for (let child of this.domBoard[this.squareTarget].children) {
         child.innerText = key
       }
-      this.domBoard[this.squareTarget].setAttribute('class', CLASSES[this.tileWidth].square);
+      if (this.isBoardComplete(this.board)) {
+        // Player has won
+        for (let i = 0; i < this.numSquares; i++) {
+          this.domBoard[i].setAttribute('class', CLASSES[this.tileWidth].squareWon);
+        }
+      } else {
+        this.domBoard[this.squareTarget].setAttribute('class', CLASSES[this.tileWidth].square);
+      }
       this.squareTarget = -1;
       this.render();
     }
@@ -191,6 +200,15 @@ const hexoku = {
     }
     return true;
   },
+  isBoardComplete(board) {
+    // Check whether the board is complete and the player has 'won'
+    for (let i = 0; i < this.numSquares; i++) {
+      if (board[i] == '') {
+        return false;
+      }
+    }
+    return this.isBoardValid(board);
+  },
   generateSolvedBoard() {
     // Randomly generate a solved board
     let board = Array(this.numSquares).fill('')
@@ -232,7 +250,7 @@ const hexoku = {
   hideSomeSquares(board, percentage) {
     // Replace {percentage}% of squares in board with empty space
     let squares = Array(this.numSquares).fill(0).map((_x, i) => i);
-    for (let squareNumber = 0; squareNumber < Math.floor(this.numSquares * percentage); squareNumber++) {
+    for (let squareNumber = 0; squareNumber < Math.ceil(this.numSquares * percentage); squareNumber++) {
       let index = Math.floor(Math.random() * squares.length);
       let square = squares.splice(index, 1)[0];
       board[square] = '';

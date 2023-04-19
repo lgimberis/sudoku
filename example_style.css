@@ -60,6 +60,11 @@
   background-color: rgb(50, 50,255);
 }
 
+.hexoku-won,.hexoku-won:hover {
+  background-color: rgb(170, 255, 170);
+}
+
+
 
 .sudoku {
   table-layout: fixed;
@@ -123,3 +128,6 @@
   background-color: rgb(50, 50,255);
 }
 
+.sudoku-won,.sudoku-won:hover {
+  background-color: rgb(170, 255, 170);
+}
