@@ -8,7 +8,25 @@
 
 <body>
   <div id="hexoku"></div>
-  <button id="hexoku-restart">Restart</button>
+  <form id="hexoku-form">
+    <fieldset>
+      <legend>Difficulty</legend>
+      <label>
+        <input type="radio" id="hexoku-difficulty-easy" name="hexoku-difficulty" value="difficulty-easy">
+        Easy
+      </label>
+      <label>
+        <input type="radio" id="hexoku-difficulty-medium" name="hexoku-difficulty" value="difficulty-medium">
+        Medium
+      </label>
+      <label>
+        <input type="radio" id="hexoku-difficulty-hard" name="hexoku-difficulty" value="difficulty-hard">
+        Hard
+      </label>
+    </fieldset>
+    <button type="submit">Restart</button>
+  </form>
+
   <script type="module" src="./example.js"></script>
 </body>
 
