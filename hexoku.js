@@ -108,7 +108,6 @@ export class Hexoku {
     for (let i = 0; i < this.numSquares; i++) {
       this.domBoard[i].children[0].innerText = this.board[i];
     }
-    console.log("Board is valid: ", this.isBoardValid(this.board));
   }
   squaresInRow(board, row) {
     // Return an array of the non-empty contents of all squares in row #{row}

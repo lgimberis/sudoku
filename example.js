@@ -13,9 +13,7 @@ window.addEventListener('load', () => {
     e.preventDefault();
     let formData = new FormData(restartForm);
     let percentageHidden = DIFFICULTIES["difficulty-medium"];
-    for (const pair of formData.entries()) {
-      let key = pair[0];
-      let value = pair[1];
+    for (const [key, value] of formData.entries()) {
       if (key == "hexoku-difficulty") {
         percentageHidden = DIFFICULTIES[value];
       }
