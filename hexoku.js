@@ -26,7 +26,7 @@ const CLASSES = {
   }
 }
 
-const hexoku = {
+export const hexoku = {
   squareTarget: -1,
   init(hiddenSquarePercentage = 0.5) {
     // Create our board, fill it, empty it, and add relevant event listeners.
@@ -272,4 +272,3 @@ const hexoku = {
   }
 };
 
-window.addEventListener('load', hexoku.init());
