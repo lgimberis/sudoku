@@ -28,7 +28,7 @@ const CLASSES = {
 
 const hexoku = {
   squareTarget: -1,
-  setup() {
+  setup(hiddenSquarePercentage = 0.5) {
     // Create our board, fill it, empty it, and add relevant event listeners.
     let root = null;
     let width = null;
@@ -67,7 +67,7 @@ const hexoku = {
       }
     }
     this.board = this.generateSolvedBoard(width);
-    this.board = this.hideSomeSquares(this.board, 0.5);
+    this.board = this.hideSomeSquares(this.board, hiddenSquarePercentage);
     this.distinguishFilledSquares();
     this.render();
   },
