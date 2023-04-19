@@ -265,6 +265,7 @@ export class Hexoku {
       if (this.board[squareNumber]) {
         this.domBoard[squareNumber].setAttribute('class', CLASSES[this.tileWidth].squareFixed);
       } else {
+        this.domBoard[squareNumber].setAttribute('class', CLASSES[this.tileWidth].square);
         this.domBoard[squareNumber].addEventListener('click', this.onClickSquare(squareNumber, this).bind(this.domBoard[squareNumber]));
       }
     }
