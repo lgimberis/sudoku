@@ -28,7 +28,7 @@ const CLASSES = {
 
 const hexoku = {
   squareTarget: -1,
-  setup(hiddenSquarePercentage = 0.5) {
+  init(hiddenSquarePercentage = 0.5) {
     // Create our board, fill it, empty it, and add relevant event listeners.
     let root = null;
     let width = null;
@@ -46,7 +46,6 @@ const hexoku = {
     this.tileWidth = width;
     this.boardWidth = width * width;
     this.numSquares = this.boardWidth * this.boardWidth;
-    this.board = new Array(this.numSquares).fill('');
     this.domBoard = new Array(this.numSquares).fill(0);
     let board = document.createElement("table");
     board.addEventListener('click', this.onClickBoard.bind(this), true);
@@ -66,12 +65,15 @@ const hexoku = {
         this.domBoard[y * this.boardWidth + x] = square;
       }
     }
-    this.board = this.generateSolvedBoard(width);
+    this.startGame(hiddenSquarePercentage);
+  },
+  startGame(hiddenSquarePercentage) {
+    this.board = new Array(this.numSquares).fill('');
+    this.board = this.generateSolvedBoard(this.tileWidth);
     this.board = this.hideSomeSquares(this.board, hiddenSquarePercentage);
     this.distinguishFilledSquares();
     this.render();
   },
-
   onType(event) {
     // Update the DOM and board when the user types a valid key having selected a square.
     let key = event.key.toString();
@@ -270,4 +272,4 @@ const hexoku = {
   }
 };
 
-window.addEventListener('load', hexoku.setup());
+window.addEventListener('load', hexoku.init());
