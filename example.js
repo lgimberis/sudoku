@@ -1,4 +1,4 @@
-import { Hexoku } from "./hexoku.js"
+import { Sudoku } from "./sudoku.js"
 
 const DIFFICULTIES = {
   "difficulty-easy": 0.3,
@@ -7,18 +7,18 @@ const DIFFICULTIES = {
 }
 
 window.addEventListener('load', () => {
-  let hexoku = new Hexoku(0.5);
-  let restartForm = document.getElementById('hexoku-form');
+  let sudoku = new Sudoku(0.5);
+  let restartForm = document.getElementById('sudoku-form');
   restartForm.addEventListener('submit', (e) => {
     e.preventDefault();
     let formData = new FormData(restartForm);
     let percentageHidden = DIFFICULTIES["difficulty-medium"];
     for (const [key, value] of formData.entries()) {
-      if (key == "hexoku-difficulty") {
+      if (key == "sudoku-difficulty") {
         percentageHidden = DIFFICULTIES[value];
       }
     }
-    hexoku.startGame(percentageHidden);
+    sudoku.startGame(percentageHidden);
   });
 });
 

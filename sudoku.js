@@ -26,7 +26,7 @@ const CLASSES = {
   }
 }
 
-export class Hexoku {
+export class Sudoku {
   constructor(hiddenSquarePercentage = 0.5) {
     // Create our board, fill it, empty it, and add relevant event listeners.
     this.squareTarget = -1;
@@ -94,11 +94,11 @@ export class Hexoku {
     }
   }
 
-  onClickSquare(index, hexoku) {
+  onClickSquare(index, sudoku) {
     // Makes a square look "clicked". Also tag it as being the target of keyboard inputs.
     return function(_event) {
-      this.setAttribute('class', CLASSES[hexoku.tileWidth].squareClicked);
-      hexoku.squareTarget = index;
+      this.setAttribute('class', CLASSES[sudoku.tileWidth].squareClicked);
+      sudoku.squareTarget = index;
     }
   }
 
