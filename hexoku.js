@@ -26,10 +26,10 @@ const CLASSES = {
   }
 }
 
-export const hexoku = {
-  squareTarget: -1,
-  init(hiddenSquarePercentage = 0.5) {
+export class Hexoku {
+  constructor(hiddenSquarePercentage = 0.5) {
     // Create our board, fill it, empty it, and add relevant event listeners.
+    this.squareTarget = -1;
     let root = null;
     let width = null;
     for (const _width in CLASSES) {
@@ -66,14 +66,13 @@ export const hexoku = {
       }
     }
     this.startGame(hiddenSquarePercentage);
-  },
+  }
   startGame(hiddenSquarePercentage) {
-    this.board = new Array(this.numSquares).fill('');
-    this.board = this.generateSolvedBoard(this.tileWidth);
+    this.board = this.generateSolvedBoard();
     this.board = this.hideSomeSquares(this.board, hiddenSquarePercentage);
     this.distinguishFilledSquares();
     this.render();
-  },
+  }
   onType(event) {
     // Update the DOM and board when the user types a valid key having selected a square.
     let key = event.key.toString();
@@ -93,7 +92,7 @@ export const hexoku = {
       this.squareTarget = -1;
       this.render();
     }
-  },
+  }
 
   onClickSquare(index, hexoku) {
     // Makes a square look "clicked". Also tag it as being the target of keyboard inputs.
@@ -101,7 +100,7 @@ export const hexoku = {
       this.setAttribute('class', CLASSES[hexoku.tileWidth].squareClicked);
       hexoku.squareTarget = index;
     }
-  },
+  }
 
 
   render() {
@@ -110,7 +109,7 @@ export const hexoku = {
       this.domBoard[i].children[0].innerText = this.board[i];
     }
     console.log("Board is valid: ", this.isBoardValid(this.board));
-  },
+  }
   squaresInRow(board, row) {
     // Return an array of the non-empty contents of all squares in row #{row}
     let squares = []
@@ -120,7 +119,7 @@ export const hexoku = {
       }
     }
     return squares;
-  },
+  }
 
   squaresInColumn(board, column) {
     // Return an array of the non-empty contents of all squares in column #{column}
@@ -131,19 +130,19 @@ export const hexoku = {
       }
     }
     return squares;
-  },
+  }
 
   coordToTileIndex(row, column) {
     // Convert a {row, column} combination to a "tile index".
     return Math.floor(row / this.tileWidth) * this.tileWidth + Math.floor(column / this.tileWidth);
-  },
+  }
 
   indexToTileIndex(index) {
     // Convert an array index to a {row, column} combination and return the "tile index"
     let column = index % this.boardWidth;
     let row = (index - column) / this.boardWidth;
     return this.coordToTileIndex(row, column);
-  },
+  }
 
   squaresInTile(board, tileIndex) {
     // Return an array of the non-empty contents of all squares in tile #{tileIndex}
@@ -159,7 +158,7 @@ export const hexoku = {
       }
     }
     return squares;
-  },
+  }
   onClickBoard(_event) {
     // Reset the class on all squares so none appear "clicked". Reset the target so typing does nothing again.
     if (this.squareTarget != -1) {
@@ -169,11 +168,11 @@ export const hexoku = {
       }
     }
     this.squareTarget = -1;
-  },
+  }
   doesArrayHaveDuplicates(array) {
     // Helper for checking if an array has any duplicate items
     return array.filter((x, i) => array.indexOf(x) != i).length > 0;
-  },
+  }
   isPlacementValid(board, index, value) {
     // Check if it is valid to place 'value' at square 'index'
     let column = index % this.boardWidth;
@@ -188,7 +187,7 @@ export const hexoku = {
     // Test the surrounding tile
     let isTileValid = !(this.squaresInTile(board, this.coordToTileIndex(row, column)).includes(value));
     return isRowValid && isColumnValid && isTileValid;
-  },
+  }
   isBoardValid(board) {
     // Check that our board abides by the rules of Sudoku
     // Rows, columns, and tiles are all checked
@@ -201,7 +200,7 @@ export const hexoku = {
       }
     }
     return true;
-  },
+  }
   isBoardComplete(board) {
     // Check whether the board is complete and the player has 'won'
     for (let i = 0; i < this.numSquares; i++) {
@@ -210,7 +209,7 @@ export const hexoku = {
       }
     }
     return this.isBoardValid(board);
-  },
+  }
   generateSolvedBoard() {
     // Randomly generate a solved board
     let board = Array(this.numSquares).fill('')
@@ -248,7 +247,7 @@ export const hexoku = {
       }
     }
     return board;
-  },
+  }
   hideSomeSquares(board, percentage) {
     // Replace {percentage}% of squares in board with empty space
     let squares = Array(this.numSquares).fill(0).map((_x, i) => i);
@@ -258,7 +257,7 @@ export const hexoku = {
       board[square] = '';
     }
     return board
-  },
+  }
   distinguishFilledSquares() {
     // Set a 'fixed' CSS class for the squares that the player starts with.
     // Add an event listener for the squares that the player can edit.
